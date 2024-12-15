@@ -23,6 +23,8 @@ func AddRoutes(router *gin.RouterGroup) {
 		// This api is responsible for student registration
 		api.POST("/authenticate", controllers.UserRegistration)
 		api.POST("/otp/verify", controllers.VerifyCode)
+		// This api is responsible for resend otp on phone number.
+		router.POST("/otp/send", controllers.ResendVerificationCode)
 
 	}
 

@@ -26,6 +26,59 @@ paths:
       summary: This controller will handles the registration process for user.
       tags:
       - Registration
+  /otp/send:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: |-
+        This controller will resend the OTP.
+        This api is taking phone number as postform and user ip from header.
+      parameters:
+      - description: Phone Number
+        in: formData
+        name: phone-number
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: This controller will resend the given code same as OTP.
+      tags:
+      - PhoneVerification
+  /otp/verify:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: |-
+        This controller will verify the given code same as OTP. It will also check if OTP is expired.
+        This api is taking code and studentId as postform
+      parameters:
+      - description: Code
+        in: formData
+        name: code
+        required: true
+        type: string
+      - description: user-id
+        in: formData
+        name: user-id
+        required: true
+        type: string
+      - description: User Agent
+        in: header
+        name: User-Agent
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: This controller will verify the given code same as OTP. It will also
+        check if OTP is expired
+      tags:
+      - PhoneVerification
 schemes:
 - http
 - https

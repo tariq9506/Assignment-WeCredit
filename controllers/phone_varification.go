@@ -4,9 +4,11 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"regexp"
 	"strconv"
 	"we-credit/models"
 	"we-credit/service"
+	"we-credit/utility"
 
 	"github.com/gin-gonic/gin"
 )
@@ -127,4 +129,73 @@ func VerifyCode(c *gin.Context) {
 		return
 
 	}
+}
+
+// ResendVerificationCode godoc
+// @Summary This controller will resend the given code same as OTP.
+// @description This controller will resend the OTP.
+// @description This api is taking phone number as postform and user ip from header.
+// @Tags PhoneVerification
+// @Accept application/x-www-form-urlencoded
+// @Param phone-number  formData  string true "Phone Number"
+// @Produce json
+// @Success 200
+// @Router /otp/send [POST]
+func ResendVerificationCode(c *gin.Context) {
+
+	userIP := utility.GetClientIP(c)
+	phoneNumber := c.PostForm("phone-number")
+	if len(phoneNumber) == 0 {
+		log.Println("ResendVerificationCode: failed, phone nnumber can not be empty.")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  "Failed",
+			"message": "Please enter a valid phone no.",
+		})
+		return
+	}
+	match, err := regexp.MatchString("^[0-9]{10}$", phoneNumber)
+	if !match || err != nil {
+		log.Println("ResendVerificationCode: Failed, invalid phone number with error: ", err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  "Failed",
+			"message": "Please enter a valid phone no.",
+		})
+		return
+	}
+	location := service.GetLocationFromIP(userIP)
+	details, err := models.GetDetailsOfSupportedCountryByCode(location.CountryCode)
+	if err != nil {
+		log.Println("ResendVerificationCode: GetDetailsOfSupportedCountryByCode failed to get location iformation with error: ", err)
+	}
+	otp := utility.GenerateOTP()
+
+	user := models.User{
+		Phone:       phoneNumber,
+		DialingCode: details.CountryPhoneCode,
+		UserIP:      userIP,
+		Location:    location,
+		OTP:         otp,
+	}
+	_, err = models.SaveOTP(user)
+	if err != nil {
+		log.Println("ResendVerificationCode Failed: Unable to send verification code. Please try again later", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status":  "Failed",
+			"message": "Failed to save otp",
+		})
+		return
+	}
+	// func to send the verification code to the student's phone number
+	err = SendPhoneNumberVerificationCode(user)
+	if err != nil {
+		log.Println("ResendVerificationCode Failed: Unable to send verification code. Please try again later", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status":  "Failed",
+			"message": "Failed to send otp",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"mesage": "One time message has been sent to you phone number",
+	})
 }

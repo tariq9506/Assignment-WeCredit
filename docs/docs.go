@@ -43,6 +43,78 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/otp/send": {
+            "post": {
+                "description": "This controller will resend the OTP.\nThis api is taking phone number as postform and user ip from header.",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PhoneVerification"
+                ],
+                "summary": "This controller will resend the given code same as OTP.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Phone Number",
+                        "name": "phone-number",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/otp/verify": {
+            "post": {
+                "description": "This controller will verify the given code same as OTP. It will also check if OTP is expired.\nThis api is taking code and studentId as postform",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PhoneVerification"
+                ],
+                "summary": "This controller will verify the given code same as OTP. It will also check if OTP is expired",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Code",
+                        "name": "code",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "user-id",
+                        "name": "user-id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User Agent",
+                        "name": "User-Agent",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
         }
     }
 }`
@@ -57,8 +129,8 @@ var SwaggerInfo = &swag.Spec{
 	Description:      "This is swagger api for Tutree.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
-	// LeftDelim:        "{{",
-	// RightDelim:       "}}",
+	LeftDelim:        "{{",
+	RightDelim:       "}}",
 }
 
 func init() {
