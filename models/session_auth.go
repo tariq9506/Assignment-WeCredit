@@ -23,7 +23,7 @@ type JWTAuthClaims struct {
 // location : location of user
 // Return -
 // success or error
-func CreateNewSession(userID int64, validUntil time.Time, token, userAgent, userIP, location string) error {
+func CreateNewSession(userID int64, validUntil time.Time, token, userAgent, userIP, location, device string) error {
 	db, err := config.GetDB2()
 	if err != nil {
 		log.Println("CreateNewSession: Failed while connecting with the database :", err)
@@ -40,13 +40,14 @@ func CreateNewSession(userID int64, validUntil time.Time, token, userAgent, user
 			browser,
 			ip,
 			location,
+			device_info,
 			created_at
 		)
 	VALUES 
-		($1, $2,$3,$4,$5,$6,NOW())
+		($1, $2,$3,$4,$5,$6,$7,NOW())
 	RETURNING id`
 
-	_, err = db.Exec(sqlInsert, userID, token, validUntil, userAgent, userIP, location)
+	_, err = db.Exec(sqlInsert, userID, token, validUntil, userAgent, userIP, location, device)
 	if err != nil {
 		log.Println("CreateNewSession: failed while executing query with error:", err)
 		return err

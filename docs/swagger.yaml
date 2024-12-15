@@ -53,7 +53,7 @@ paths:
       - application/x-www-form-urlencoded
       description: |-
         This controller will verify the given code same as OTP. It will also check if OTP is expired.
-        This api is taking code and studentId as postform
+        This api is taking code and userId as postform
       parameters:
       - description: Code
         in: formData
@@ -68,7 +68,6 @@ paths:
       - description: User Agent
         in: header
         name: User-Agent
-        required: true
         type: string
       produces:
       - application/json
@@ -88,9 +87,9 @@ paths:
         fetches the student's demo session details. It responds with a JSON object containing the student's information
         and demo session details.
       parameters:
-      - description: user_id
+      - description: User ID
         in: query
-        name: UserID
+        name: userID
         required: true
         type: number
       produces:

@@ -126,7 +126,7 @@ func RegisterUser(c *gin.Context) models.User {
 // @description and demo session details.
 // @Tags Student
 // @Accept application/x-www-form-urlencoded
-// @Param UserID query  number true "user_id"
+// @Param userID query  number true "User ID"
 // @Produce json
 // @Success 200
 // @Router /profile [get]

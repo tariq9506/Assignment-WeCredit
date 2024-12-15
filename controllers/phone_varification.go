@@ -52,7 +52,7 @@ func SendPhoneNumberVerificationCode(user models.User) error {
 // @Accept application/x-www-form-urlencoded
 // @Param code  formData  string true "Code"
 // @Param user-id  formData  string true "user-id"
-// @Param User-Agent header string true "User Agent"
+// @Param User-Agent header string false "User Agent"
 // @Produce json
 // @Success 200
 // @Router /otp/verify [POST]

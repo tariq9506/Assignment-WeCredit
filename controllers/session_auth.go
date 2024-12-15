@@ -10,6 +10,7 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/mssola/user_agent"
 )
 
 // CreateSession creates a new session for a user by generating a JWT token and setting it as a cookie in the HTTP response.
@@ -21,6 +22,9 @@ import (
 func CreateUserAuth(c *gin.Context, user models.User) string {
 
 	userAgent := c.GetHeader("User-Agent")
+	ua := user_agent.New(userAgent)
+	device := ua.OS()
+	browser, _ := ua.Browser()
 	userIP := utility.GetClientIP(c)
 	authLocaiton := service.GetLocationFromIP(userIP)
 
@@ -43,7 +47,7 @@ func CreateUserAuth(c *gin.Context, user models.User) string {
 	// - false: Whether the cookie should be accessible only through HTTP requests (true for HTTP-only cookies)
 	tokenValidity := getTimeForCookies()
 	location := authLocaiton.City + ", " + authLocaiton.State + ", " + authLocaiton.Country
-	models.CreateNewSession(user.ID, tokenValidity, token, userAgent, userIP, location)
+	models.CreateNewSession(user.ID, tokenValidity, token, browser, userIP, location, device)
 
 	c.SetCookie("token", token, maxAge, "/", domain, false, false)
 	return token

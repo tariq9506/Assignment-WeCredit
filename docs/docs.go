@@ -75,7 +75,7 @@ const docTemplate = `{
         },
         "/otp/verify": {
             "post": {
-                "description": "This controller will verify the given code same as OTP. It will also check if OTP is expired.\nThis api is taking code and studentId as postform",
+                "description": "This controller will verify the given code same as OTP. It will also check if OTP is expired.\nThis api is taking code and userId as postform",
                 "consumes": [
                     "application/x-www-form-urlencoded"
                 ],
@@ -132,8 +132,8 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "number",
-                        "description": "user_id",
-                        "name": "UserID",
+                        "description": "User ID",
+                        "name": "userID",
                         "in": "query",
                         "required": true
                     }
@@ -158,10 +158,9 @@ var SwaggerInfo = &swag.Spec{
 	Description:      "This is swagger api for Tutree.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
-	// LeftDelim:        "{{",
-	// RightDelim:       "}}",
-}
-
+// 	LeftDelim:        "{{",
+// 	RightDelim:       "}}",
+ }
 func init() {
 	swag.Register(SwaggerInfo.InstanceName(), SwaggerInfo)
 }

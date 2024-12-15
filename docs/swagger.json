@@ -72,7 +72,7 @@
         },
         "/otp/verify": {
             "post": {
-                "description": "This controller will verify the given code same as OTP. It will also check if OTP is expired.\nThis api is taking code and studentId as postform",
+                "description": "This controller will verify the given code same as OTP. It will also check if OTP is expired.\nThis api is taking code and userId as postform",
                 "consumes": [
                     "application/x-www-form-urlencoded"
                 ],
@@ -102,8 +102,7 @@
                         "type": "string",
                         "description": "User Agent",
                         "name": "User-Agent",
-                        "in": "header",
-                        "required": true
+                        "in": "header"
                     }
                 ],
                 "responses": {
@@ -129,8 +128,8 @@
                 "parameters": [
                     {
                         "type": "number",
-                        "description": "user_id",
-                        "name": "UserID",
+                        "description": "User ID",
+                        "name": "userID",
                         "in": "query",
                         "required": true
                     }
