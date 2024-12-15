@@ -1,0 +1,32 @@
+basePath: /api
+info:
+  contact: {}
+  description: This is swagger api for Tutree.
+  title: Tutree Swagger API
+  version: "2.0"
+paths:
+  /authenticate:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: |-
+        The UserRegistration function handles the process of signing up
+        user on a website. It expects the user to submit their phone number through a form.
+      parameters:
+      - description: Phone
+        in: formData
+        name: phone-number
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: This controller will handles the registration process for user.
+      tags:
+      - Registration
+schemes:
+- http
+- https
+swagger: "2.0"
