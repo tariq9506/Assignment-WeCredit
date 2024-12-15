@@ -1,0 +1,145 @@
+{
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "This is swagger api for Tutree.",
+        "title": "Tutree Swagger API",
+        "contact": {},
+        "version": "2.0"
+    },
+    "basePath": "/api",
+    "paths": {
+        "/authenticate": {
+            "post": {
+                "description": "The UserRegistration function handles the process of signing up\nuser on a website. It expects the user to submit their phone number through a form.",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Registration"
+                ],
+                "summary": "This controller will handles the registration process for user.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Phone",
+                        "name": "phone-number",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/otp/send": {
+            "post": {
+                "description": "This controller will resend the OTP.\nThis api is taking phone number as postform and user ip from header.",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PhoneVerification"
+                ],
+                "summary": "This controller will resend the given code same as OTP.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Phone Number",
+                        "name": "phone-number",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/otp/verify": {
+            "post": {
+                "description": "This controller will verify the given code same as OTP. It will also check if OTP is expired.\nThis api is taking code and userId as postform",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PhoneVerification"
+                ],
+                "summary": "This controller will verify the given code same as OTP. It will also check if OTP is expired",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Code",
+                        "name": "code",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "user-id",
+                        "name": "user-id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User Agent",
+                        "name": "User-Agent",
+                        "in": "header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/profile": {
+            "get": {
+                "description": "This function retrieves the student's profile based on the provided Authorization token and\nfetches the student's demo session details. It responds with a JSON object containing the student's information\nand demo session details.",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Student"
+                ],
+                "summary": "This controller will handles to fetch profile of students.",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "User ID",
+                        "name": "userID",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        }
+    }
+}
