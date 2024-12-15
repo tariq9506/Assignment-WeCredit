@@ -22,6 +22,7 @@ func AddRoutes(router *gin.RouterGroup) {
 
 		// This api is responsible for student registration
 		api.POST("/authenticate", controllers.UserRegistration)
+		api.POST("/otp/verify", controllers.VerifyCode)
 
 	}
 
