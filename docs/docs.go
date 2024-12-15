@@ -115,6 +115,35 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/profile": {
+            "get": {
+                "description": "This function retrieves the student's profile based on the provided Authorization token and\nfetches the student's demo session details. It responds with a JSON object containing the student's information\nand demo session details.",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Student"
+                ],
+                "summary": "This controller will handles to fetch profile of students.",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "user_id",
+                        "name": "UserID",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
         }
     }
 }`
@@ -129,8 +158,8 @@ var SwaggerInfo = &swag.Spec{
 	Description:      "This is swagger api for Tutree.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
-	LeftDelim:        "{{",
-	RightDelim:       "}}",
+	// LeftDelim:        "{{",
+	// RightDelim:       "}}",
 }
 
 func init() {

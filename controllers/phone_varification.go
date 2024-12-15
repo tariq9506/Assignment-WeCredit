@@ -47,7 +47,7 @@ func SendPhoneNumberVerificationCode(user models.User) error {
 // VerifyCode godoc
 // @Summary This controller will verify the given code same as OTP. It will also check if OTP is expired
 // @description This controller will verify the given code same as OTP. It will also check if OTP is expired.
-// @description This api is taking code and studentId as postform
+// @description This api is taking code and userId as postform
 // @Tags PhoneVerification
 // @Accept application/x-www-form-urlencoded
 // @Param code  formData  string true "Code"
@@ -68,11 +68,11 @@ func VerifyCode(c *gin.Context) {
 		return
 
 	}
-	log.Println("CODE ENTER BY STUDENT: ", code)
+	log.Println("CODE ENTER BY user: ", code)
 
 	userID, err := strconv.Atoi(c.PostForm("user-id"))
 	if err != nil {
-		log.Println("Verification Code Error: Failed to convert student ID into a valid number.", err)
+		log.Println("Verification Code Error: Failed to convert user ID into a valid number.", err)
 		c.JSON(http.StatusBadGateway, gin.H{
 			"status":  "Failed",
 			"message": "Please enter a valid user id",
@@ -80,10 +80,10 @@ func VerifyCode(c *gin.Context) {
 		return
 	}
 
-	// function use to fetch student details by student id
+	// function use to fetch user details by user id
 	user, err := models.GetUserByID(userID)
 	if err != nil {
-		log.Println("VerifyCode: failed to fetch student data :", err)
+		log.Println("VerifyCode: failed to fetch user data :", err)
 		c.JSON(http.StatusNotFound, gin.H{
 			"status":  "Failed",
 			"message": "Please enter a valid user details.",
@@ -185,7 +185,7 @@ func ResendVerificationCode(c *gin.Context) {
 		})
 		return
 	}
-	// func to send the verification code to the student's phone number
+	// func to send the verification code to the user's phone number
 	err = SendPhoneNumberVerificationCode(user)
 	if err != nil {
 		log.Println("ResendVerificationCode Failed: Unable to send verification code. Please try again later", err)

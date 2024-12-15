@@ -79,6 +79,28 @@ paths:
         check if OTP is expired
       tags:
       - PhoneVerification
+  /profile:
+    get:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: |-
+        This function retrieves the student's profile based on the provided Authorization token and
+        fetches the student's demo session details. It responds with a JSON object containing the student's information
+        and demo session details.
+      parameters:
+      - description: user_id
+        in: query
+        name: UserID
+        required: true
+        type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: This controller will handles to fetch profile of students.
+      tags:
+      - Student
 schemes:
 - http
 - https

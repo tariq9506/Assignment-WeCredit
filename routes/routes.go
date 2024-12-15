@@ -20,11 +20,13 @@ func AddRoutes(router *gin.RouterGroup) {
 	api := router.Group("/user")
 	{
 
-		// This api is responsible for student registration
+		// This api is responsible for user registration
 		api.POST("/authenticate", controllers.UserRegistration)
 		api.POST("/otp/verify", controllers.VerifyCode)
 		// This api is responsible for resend otp on phone number.
-		router.POST("/otp/send", controllers.ResendVerificationCode)
+		api.POST("/otp/send", controllers.ResendVerificationCode)
+		//This api is responsible for fetching user profile from database.
+		api.GET("/profile", controllers.GetUserProfile)
 
 	}
 

@@ -47,7 +47,7 @@ func SaveNewUser(user *User) (string, error) {
 	)
 	userLocation := user.Location.City + ", " + user.Location.State + ", " + user.Location.Country
 	otpValidUntil := time.Now().Add(time.Minute * 5)
-	// Set phone_otp_expire time to 24 hrs from date of student generated.
+	// Set phone_otp_expire time to 24 hrs from date of user generated.
 
 	err = db.QueryRow(query, user.Phone, user.OTP, otpValidUntil, userLocation, user.UserIP, user.DialingCode).Scan(&user_id, &phoneVerified, &action)
 
@@ -62,11 +62,11 @@ func SaveNewUser(user *User) (string, error) {
 	return action, nil
 }
 
-// GetUserByID retrieves a student record from the database by user ID.
+// GetUserByID retrieves a user record from the database by user ID.
 // Parameters:
 // - userID: The ID of the user to retrieve.
 // Returns:
-// - Student: The user record retrieved from the database.
+// - user: The user record retrieved from the database.
 // - error: Any error encountered during the process.
 func GetUserByID(userID int) (User, error) {
 
@@ -132,4 +132,74 @@ func getUser(query string) (User, error) {
 	}
 
 	return user, err
+}
+
+// GetuserProfile retrieves the profile details of a user from the database based on the provided user ID.
+// It returns a user struct containing the user's information or an error if the operation fails.
+//
+// Parameters:
+//   - userID (int): The unique identifier for the user whose profile is to be retrieved.
+//
+// Returns:
+//   - user: A struct containing the user's profile details such as name, grade, parent email, picture URL, and school ID.
+//   - error: An error object if there is any failure during database connection or query execution.
+func GetUserProfile(userID int) (User, error) {
+	db, err := config.GetDB2()
+	var userDetails User
+	if err != nil {
+		log.Println("GetUserProfile: Failed when try to connect with database with error: ", err)
+		return userDetails, err
+	}
+	defer db.Close()
+	var (
+		isPhoneVerified sql.NullBool
+		phoneNumber     sql.NullString
+		dialingCode     sql.NullString
+		location        sql.NullString
+		createdAt       sql.NullTime
+	)
+	query := `
+		SELECT                                     
+    			u.phone_verified,
+    			u.phone_number,
+    			u.dialing_code,
+    			u.location,
+				u.created_at
+		FROM 
+		    public.user AS u 
+		WHERE 
+   			 u.id = $1
+`
+
+	err = db.QueryRow(query, userID).Scan(
+		&isPhoneVerified,
+		&phoneNumber,
+		&dialingCode,
+		&location,
+		&createdAt,
+	)
+	if err == sql.ErrNoRows {
+		return userDetails, nil
+	}
+	if err != nil {
+		log.Println("GetUserProfile: Failed while execute the query with error: ", err)
+		return userDetails, err
+	}
+	var locStruct service.Location
+	loc := strings.Split(location.String, ", ")
+	if len(loc) > 2 {
+		locStruct.City = loc[0]
+		locStruct.State = loc[1]
+		locStruct.CountryCode = loc[2]
+
+	}
+	// Create a map to store the session details.
+	userDetails = User{
+		IsPhoneVerified: isPhoneVerified.Bool,
+		Phone:           phoneNumber.String,
+		DialingCode:     dialingCode.String,
+		Location:        locStruct,
+		CreatedAt:       createdAt.Time,
+	}
+	return userDetails, nil
 }

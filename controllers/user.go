@@ -4,6 +4,8 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+	"strconv"
+	"sync"
 	"we-credit/models"
 	"we-credit/service"
 	"we-credit/utility"
@@ -115,4 +117,60 @@ func RegisterUser(c *gin.Context) models.User {
 
 	_, _ = models.SaveNewUser(&user)
 	return user
+}
+
+// GetStudentProfile godoc
+// @Summary This controller will handles to fetch profile of students.
+// @description This function retrieves the student's profile based on the provided Authorization token and
+// @description fetches the student's demo session details. It responds with a JSON object containing the student's information
+// @description and demo session details.
+// @Tags Student
+// @Accept application/x-www-form-urlencoded
+// @Param UserID query  number true "user_id"
+// @Produce json
+// @Success 200
+// @Router /profile [get]
+func GetUserProfile(c *gin.Context) {
+	// Fetch the authorization token from the request header.
+	userIDStr := c.Query("userID")
+	if len(userIDStr) == 0 {
+		log.Println("GetUserProfile: Failed to fetch user's id.")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  "Failed",
+			"message": "Failed to fetch user id from query params.",
+		})
+		return
+	}
+	userID, err := strconv.Atoi(userIDStr)
+	if err != nil {
+		log.Println("GetUserProfile: Failed to parse user's id into integer.")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":  "Failed",
+			"message": "Failed to parse user id into integer.",
+		})
+		return
+	}
+	var wg sync.WaitGroup
+	wg.Add(1)
+
+	var userProfile models.User
+	var fetchProfileErr error
+
+	go func() {
+		defer wg.Done()
+		// Fetch the student's profile details using user ID.
+		userProfile, fetchProfileErr = models.GetUserProfile(userID)
+		if fetchProfileErr != nil {
+			log.Println("[ERROR] GetUserProfile: Failed to fetch user's details by using user ID with error: ", fetchProfileErr)
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"status":  "Failed",
+				"message": "Failed to fetch user details from database.",
+			})
+			return
+		}
+	}()
+	wg.Wait()
+	// Send the JSON response with the student profile and demo session details.
+	c.JSON(http.StatusOK, userProfile)
+
 }
